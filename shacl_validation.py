@@ -45,5 +45,5 @@ def run_validation(data_graph_path, shapes_graph_path, runs=10):
 
 if __name__ == "__main__":
     data_graph_path = r"C:\Users\nandi\OneDrive\Pictures\Screenshots\documents\TUM\4th Sem\BPC\Shacl Validation\airroutes.ttl"
-    shapes_graph_path = r"C:\Users\nandi\OneDrive\Pictures\Screenshots\documents\TUM\4th Sem\BPC\Shacl Validation\shacl-shapes1.ttl"
+    shapes_graph_path = r"C:\Users\nandi\OneDrive\Pictures\Screenshots\documents\TUM\4th Sem\BPC\Shacl Validation\shacl-shapes.ttl"
     run_validation(data_graph_path, shapes_graph_path, runs=10)

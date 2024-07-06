@@ -1,0 +1,71 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix ex: <http://openflights.org/resource/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Constraint 1: For a route, the source and destination cannot be the same.
+ex:RouteShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Route ;
+    sh:not [
+        a sh:PropertyShape ;
+        sh:path ex:source ;
+        sh:equals ex:destination ;
+        sh:message "Source and destination cannot be the same." ;
+    ] .
+
+# Constraint 2: For an airport, the city it is located in is not the same as the country it is located in.
+ex:AirportShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Airport ;
+    sh:not [
+        a sh:PropertyShape ;
+        sh:path ex:city ;
+        sh:equals ex:country ;
+        sh:message "The city and country of an airport cannot be the same." ;
+    ] .
+
+# Constraint 3: There is not a route, which is not code-shared, while the airline operating it is in operational status.
+ex:RouteCodeShareShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Route ;
+    sh:not [
+        sh:and (
+            [ sh:path ex:codeshare ; sh:hasValue true ]
+            [ sh:path ex:operatedBy ;
+              sh:node [
+                  sh:path ex:operationalStatus ;
+                  sh:not [ sh:hasValue "Operational" ]
+              ]
+            ]
+        )
+    ] ;
+    sh:message "A code-shared route must be operated by an airline in operational status." .
+
+# Constraint 4: For airlines, the label can’t be "unknown".
+ex:AirlineLabelShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Airline ;        
+    sh:not [
+        a sh:PropertyShape ;
+        sh:path rdfs:label ;
+        sh:hasValue "Unknown" ;
+        sh:message "The label of the airline cannot be 'unknown'." ;
+    ] .
+
+# Constraint 5: For each of the two routes, if the operating airline for them is the same, then their airline IDs are also the same.
+ex:RouteAirlineIDShape
+    a sh:NodeShape ;
+    sh:targetClass ex:Route ;
+    sh:sparql [
+        sh:select """
+            SELECT ?this
+            WHERE {
+                ?this src:operatingAirline ?airline1 .
+                ?otherRoute src:operatingAirline ?airline1 .
+                ?airline1 src:airlineID ?id1 .
+                ?otherRoute src:airlineID ?id2 .
+                FILTER(?id1 != ?id2)
+            }
+        """ ;
+        sh:message "Airline IDs must be the same for the same operating airline." ;
+    ] .

@@ -54,7 +54,7 @@ public class RouteValidation2 {
         int countryIdx = 12;
         int codeSharedIdx = 3;
         int airlineOperationalStatusIdx = 20;
-        int airlineLabelIdx = 1;
+        int airlineLabelIdx = 19;
         int airlineIdIdx = 2;
 
         int routeId = Integer.parseInt(row[routeIdIdx]);
